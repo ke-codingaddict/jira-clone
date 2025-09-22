@@ -15,18 +15,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Link from "next/link";
+import { loginSchema } from "../schema";
+import { useLogin } from "../use-login";
 
-const formSchema = z.object({
-  email: z.email().trim().min(1, "Email is Required"),
-  password: z.string().min(1, "Password cannot be empty"),
-});
-const onSubmit = (values: z.infer<typeof formSchema>) => {
+
+const onSubmit = (values: z.infer<typeof loginSchema>) => {
   console.log(values);
 };
 
 export const SignInCard = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const {mutate}=useLogin();
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -88,7 +88,7 @@ export const SignInCard = () => {
             <p>
               You don't have an account?{" "}
               <Link href="/sign-up" className="text-blue-600">
-                Sign up
+                Sign Up
               </Link>
             </p>
           </CardContent>

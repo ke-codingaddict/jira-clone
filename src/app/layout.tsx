@@ -3,11 +3,11 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 import { cn } from "@/lib/utils";
+import { QueryProvider } from "@/components/query-provider";
 
 export const metadata: Metadata = {
   title: "Jira Clone",
   description: "Created by Aydin",
-  
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(inter.className, "antialiased min-h-screen")}>
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );

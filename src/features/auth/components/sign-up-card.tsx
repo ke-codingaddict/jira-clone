@@ -116,6 +116,17 @@ export const SignUpCard = () => {
       <div className="px-7">
         <DottedSeparator />
       </div>
+      <div className="px-7">
+        <CardContent className="p-7 flex items-center justify-center text-sm">
+          <p>
+            Already have an account?{" "}
+            <Link href="/sign-in" className="text-blue-600">
+              Sign in
+            </Link>
+          </p>
+        </CardContent>
+        <DottedSeparator />
+      </div>
       <CardContent className="p-7 flex flex-col gap-y-4">
         <Button
           disabled={false}

@@ -14,10 +14,11 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import Link from "next/link";
 
 const formSchema = z.object({
   email: z.email().trim().min(1, "Email is Required"),
-  password: z.string().min(1,"Password cannot be empty"),
+  password: z.string().min(1, "Password cannot be empty"),
 });
 const onSubmit = (values: z.infer<typeof formSchema>) => {
   console.log(values);
@@ -81,6 +82,18 @@ export const SignInCard = () => {
         </Form>
       </CardContent>
       <div className="px-7">
+        <DottedSeparator />
+        <div className="px-7">
+          <CardContent className="p-7 flex items-center justify-center text-sm">
+            <p>
+              You don't have an account?{" "}
+              <Link href="/sign-up" className="text-blue-600">
+                Sign up
+              </Link>
+            </p>
+          </CardContent>
+          
+        </div>
         <DottedSeparator />
       </div>
       <CardContent className="p-7 flex flex-col gap-y-4">

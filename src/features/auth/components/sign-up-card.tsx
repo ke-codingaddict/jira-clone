@@ -21,25 +21,22 @@ import {
   FormMessage,
   Form,
 } from "@/components/ui/form";
+import { registerSchema } from "../schema";
+import { useRegister } from "../use-register";
 
-const formSchema = z.object({
-  name: z.string().min(1, "Name is Required").trim(),
-  email: z.email("Invalid email address").trim().min(1, "Email is Required"),
-  password: z.string().min(8, "Password must be between 8 characters"),
-});
-
-const onSubmit = (values: z.infer<typeof formSchema>) => {
-  console.log(values);
-};
 export const SignUpCard = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const { mutate } = useRegister();
+  const form = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
       email: "",
       password: "",
     },
   });
+  const onSubmit = (values: z.infer<typeof registerSchema>) => {
+    mutate({ json: values });
+  };
   return (
     <Card className="w-full h-full md:w-[487px] border-none shadow-none">
       <CardHeader className="flex items-center justify-center text-center">
@@ -135,7 +132,7 @@ export const SignUpCard = () => {
           className="w-full"
         >
           <FcGoogle className="mr-2 size-5" />
-          Login with Google
+          Register with Google
         </Button>
         <Button
           disabled={false}
@@ -144,7 +141,7 @@ export const SignUpCard = () => {
           className="w-full"
         >
           <FaGithub className="mr-2 size-5" />
-          Login with Github
+          Register with Github
         </Button>
       </CardContent>
     </Card>

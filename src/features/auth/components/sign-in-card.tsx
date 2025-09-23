@@ -18,13 +18,8 @@ import Link from "next/link";
 import { loginSchema } from "../schema";
 import { useLogin } from "../use-login";
 
-
-const onSubmit = (values: z.infer<typeof loginSchema>) => {
-  console.log(values);
-};
-
 export const SignInCard = () => {
-  const {mutate}=useLogin();
+  const { mutate } = useLogin();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -32,6 +27,9 @@ export const SignInCard = () => {
       password: "",
     },
   });
+  const onSubmit = (values: z.infer<typeof loginSchema>) => {
+    mutate({ json: values });
+  };
   return (
     <Card className="w-full h-full md:w-[487px] border-none shadow-none">
       <CardHeader className="flex items-center justify-center text-center">
@@ -92,7 +90,6 @@ export const SignInCard = () => {
               </Link>
             </p>
           </CardContent>
-          
         </div>
         <DottedSeparator />
       </div>

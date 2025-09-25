@@ -12,11 +12,11 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form";
 import Link from "next/link";
-import { loginSchema } from "../schema";
-import { useLogin } from "../use-login";
+import { loginSchema } from "../api/schema";
+import { useLogin } from "../api/use-login";
 
 export const SignInCard = () => {
   const { mutate } = useLogin();
@@ -24,8 +24,8 @@ export const SignInCard = () => {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
-      password: "",
-    },
+      password: ""
+    }
   });
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
     mutate({ json: values });

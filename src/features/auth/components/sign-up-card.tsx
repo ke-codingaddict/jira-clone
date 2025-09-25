@@ -5,7 +5,7 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { FcGoogle } from "react-icons/fc";
@@ -19,10 +19,10 @@ import {
   FormField,
   FormItem,
   FormMessage,
-  Form,
+  Form
 } from "@/components/ui/form";
-import { registerSchema } from "../schema";
-import { useRegister } from "../use-register";
+import { registerSchema } from "../api/schema";
+import { useRegister } from "../api/use-register";
 
 export const SignUpCard = () => {
   const { mutate } = useRegister();
@@ -31,8 +31,8 @@ export const SignUpCard = () => {
     defaultValues: {
       name: "",
       email: "",
-      password: "",
-    },
+      password: ""
+    }
   });
   const onSubmit = (values: z.infer<typeof registerSchema>) => {
     mutate({ json: values });

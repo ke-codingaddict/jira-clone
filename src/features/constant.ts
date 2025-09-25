@@ -1,1 +1,1 @@
-export const AUTH_COOKIE=""
+export const AUTH_COOKIE = "aydin-jira-clone-session";

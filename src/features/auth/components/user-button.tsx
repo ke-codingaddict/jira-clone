@@ -1,3 +1,4 @@
+"use client";
 import { useCurrent } from "@/app/api/use.current";
 import { DottedSeparator } from "@/components/dotted-separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";

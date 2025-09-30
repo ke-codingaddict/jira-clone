@@ -23,7 +23,7 @@ export const useLogin = () => {
       return await response.json();
     },
     onSuccess: () => {
-      toast.success(`Logged in}`);
+      toast.success("Logged in");
       router.refresh();
       queryClient.invalidateQueries({ queryKey: ["current"] });
     },

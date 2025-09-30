@@ -25,7 +25,7 @@ interface CreateWorkspaceFormProps {
   onCancel?: () => void;
 }
 
-export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
+export const CreateWorkspaceForm = ({}: CreateWorkspaceFormProps) => {
   const { mutate, isPending } = useCreateWorkspace();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -41,7 +41,16 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
       image: values.image instanceof File ? values.image : ""
     };
 
-    mutate({ form: finalValues });
+    mutate(
+      { form: finalValues },
+      {
+        onSuccess: () => {
+          form.reset();
+
+          //TODO: REDIRECT TO NEW WORKSPACE
+        }
+      }
+    );
   };
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -137,7 +146,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                 type="button"
                 size="lg"
                 variant="secondary"
-                onClick={onCancel}
+                onClick={() => form.reset()}
                 disabled={isPending}
                 className="bg-red-600 text-white hover:bg-red-400"
               >

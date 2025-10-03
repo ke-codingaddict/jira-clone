@@ -4,7 +4,7 @@ import { getWorkspaceInfo } from "@/features/workspaces/queries";
 import { redirect } from "next/navigation";
 
 interface WorkspaceIdJoinPageProps {
-  params: { workspaceId: string };
+  params: { workspaceId: string; inviteCode: string };
 }
 
 const WorkspaceIdJoinPage = async ({ params }: WorkspaceIdJoinPageProps) => {

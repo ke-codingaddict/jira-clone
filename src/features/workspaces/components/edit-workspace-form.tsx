@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ArrowLeftIcon, CopyIcon, ImageIcon } from "lucide-react";
@@ -66,9 +66,9 @@ export const EditWorkspaceForm = ({
       image: initialValues.imageUrl ?? ""
     }
   });
+
   const handleResetInviteCode = async () => {
     const ok = await confirmReset();
-
     if (!ok) return;
     resetInviteCode(
       { param: { workspaceId: initialValues.$id } },
@@ -82,7 +82,6 @@ export const EditWorkspaceForm = ({
 
   const handleDelete = async () => {
     const ok = await confirmDelete();
-
     if (!ok) return;
     deleteWorkspace(
       { param: { workspaceId: initialValues.$id } },
@@ -105,20 +104,32 @@ export const EditWorkspaceForm = ({
       {
         onSuccess: ({ data }) => {
           form.reset();
-
           router.push(`/workspaces/${data.$id}`);
         }
       }
     );
   };
+
+  // FIX: Only use window in useEffect, store in state
+  const [fullInviteLink, setFullInviteLink] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setFullInviteLink(
+        `${window.location.origin}/workspaces/${initialValues.$id}/join/${initialValues.inviteCode}`
+      );
+    }
+  }, [initialValues.$id, initialValues.inviteCode]);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       form.setValue("image", file);
     }
   };
-  const fullInviteLink = `${window.location.origin}/workspaces/${initialValues.$id}/join/${initialValues.inviteCode}`;
+
   const handleCopyInviteLink = () => {
+    if (!fullInviteLink) return;
     navigator.clipboard
       .writeText(fullInviteLink)
       .then(() => toast.success("Invite link copied to clipboard"));
@@ -265,7 +276,7 @@ export const EditWorkspaceForm = ({
       <Card className="w-full h-full border-none shadow-none">
         <CardContent className="p-7">
           <div className="flex flex-col">
-            <h3 className="font-bold ">Inivite members</h3>
+            <h3 className="font-bold ">Invite members</h3>
             <p className="text-sm text-muted-foreground ">
               Use invite link to add members to your workspace.
             </p>
@@ -322,9 +333,3 @@ export const EditWorkspaceForm = ({
     </div>
   );
 };
-function resetInviteLink(
-  arg0: { param: { workspaceId: string } },
-  arg1: { onSuccess: () => void }
-) {
-  throw new Error("Function not implemented.");
-}

@@ -22,7 +22,12 @@ export const useJoinWorkspace = () => {
         json
       });
       if (!response.ok) {
-        throw new Error("Failed to join workspace");
+        let errorMsg = "Failed to join workspace";
+        try {
+          const error = await response.json();
+          errorMsg = "error" in error ? error.error : errorMsg;
+        } catch {}
+        throw new Error(errorMsg);
       }
       return await response.json();
     },
@@ -31,10 +36,9 @@ export const useJoinWorkspace = () => {
       queryClient.invalidateQueries({ queryKey: ["workspaces"] });
       queryClient.invalidateQueries({ queryKey: ["workspaces", data.$id] });
     },
-    onError: () => {
-      toast.error("Failed to join workspace");
+    onError: (error) => {
+      toast.error(error.message || "Failed to join workspace");
     }
   });
   return mutation;
 };
-1;

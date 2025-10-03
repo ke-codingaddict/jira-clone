@@ -184,7 +184,7 @@ const app = new Hono()
   .post(
     "/:workspaceId/join",
     sessionMiddleware,
-    zValidator("json", z.object({ code: z.string })),
+    zValidator("json", z.object({ code: z.string() })),
     async (c) => {
       const { workspaceId } = c.req.param();
       const { code } = c.req.valid("json");
@@ -197,6 +197,7 @@ const app = new Hono()
         workspaceId,
         userId: user.$id
       });
+
       if (member) {
         return c.json({ error: "Already a member" }, 400);
       }
@@ -208,13 +209,14 @@ const app = new Hono()
       );
 
       if (workspace.inviteCode !== code) {
-        return c.json({ error: "Invalid invite code" }, 400);
+        return c.json({ error: " Invalid invite code" }, 400);
       }
       await databases.createDocument(DATABASE_ID, MEMBERS_ID, ID.unique(), {
         workspaceId,
         userId: user.$id,
         role: MemberRole.MEMBER
       });
+
       return c.json({ data: workspace });
     }
   );

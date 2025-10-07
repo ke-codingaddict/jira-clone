@@ -1,6 +1,5 @@
 "use client";
 import { useForm } from "react-hook-form";
-import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DottedSeparator } from "@/components/dotted-separator";
@@ -23,10 +22,16 @@ import { cn } from "@/lib/utils";
 import { useCreateProject } from "../api/use-create-projects";
 import { createProjectSchema } from "../schema";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
+import { z } from "zod";
 
 interface CreateProjectFormProps {
   onCancel?: () => void;
 }
+
+// Create form schema without workspaceId
+const createProjectFormSchema = createProjectSchema.omit({ workspaceId: true });
+
+type CreateProjectFormValues = z.infer<typeof createProjectFormSchema>;
 
 export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
   const workspaceId = useWorkspaceId();
@@ -34,38 +39,44 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
   const { mutate, isPending } = useCreateProject();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const form = useForm<z.infer<typeof createProjectSchema>>({
-    resolver: zodResolver(createProjectSchema),
+  const form = useForm<CreateProjectFormValues>({
+    resolver: zodResolver(createProjectFormSchema),
     defaultValues: {
-      name: ""
+      name: "",
+      image: null
     }
   });
-  const onSubmit = (values: z.infer<typeof createProjectSchema>) => {
+
+  const onSubmit = (values: CreateProjectFormValues) => {
     const finalValues = {
       ...values,
       workspaceId,
-      
-      image: values.image instanceof File ? values.image : ""
+      image: values.image instanceof File ? values.image : undefined
     };
 
     mutate(
       { form: finalValues },
       {
-        onSuccess: ({ data }) => {
+        onSuccess: () => {
           form.reset();
-          //onCancel?.();
-
-          router.push(`/workspaces/${data.$id}`);
+          //router.push("/projects"); // Add your redirect
+        },
+        onError: (error) => {
+          console.error("Failed to create project:", error);
         }
       }
     );
   };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       form.setValue("image", file);
     }
   };
+
+  const currentImageValue = form.watch("image");
+
   return (
     <Card className="w-full h-full border-none shadow-none">
       <CardHeader className="flex p-7">
@@ -85,7 +96,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Workspace Name</FormLabel>
+                    <FormLabel>Project Name</FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="Enter project name" />
                     </FormControl>
@@ -109,7 +120,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                                 ? URL.createObjectURL(field.value)
                                 : field.value
                             }
-                            alt="Logo"
+                            alt="Project Icon"
                           />
                         </div>
                       ) : (
@@ -140,7 +151,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                             size="xs"
                             className="w-fit mt-2"
                             onClick={() => {
-                              field.onChange(null);
+                              form.setValue("image", null);
                               if (inputRef.current) {
                                 inputRef.current.value = "";
                               }
@@ -162,6 +173,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                         )}
                       </div>
                     </div>
+                    <FormMessage />
                   </div>
                 )}
               />

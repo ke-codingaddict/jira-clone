@@ -57,9 +57,9 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
     mutate(
       { form: finalValues },
       {
-        onSuccess: () => {
+        onSuccess: ({ data }) => {
           form.reset();
-          //router.push("/projects"); // Add your redirect
+          router.push(`/workspaces/${workspaceId}/projects/${data.$id}`);
         },
         onError: (error) => {
           console.error("Failed to create project:", error);

@@ -23,8 +23,8 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useConfirm } from "@/hooks/use-confirm";
 import { Project } from "../types";
-import { useUpdateProject } from "../api/use-update-projects";
 import { updateProjectSchema } from "../schema";
+import { useDeleteProject } from "../api/use-delete-project";
 
 interface EditProjectFormProps {
   onCancel?: () => void;
@@ -36,12 +36,12 @@ export const EditProjectForm = ({
   initialValues
 }: EditProjectFormProps) => {
   const router = useRouter();
-  const { mutate, isPending } = useUpdateProject();
-  //const { mutate: deleteWorkspace, isPending: isDeletingWorkspace } =
-  //useDeleteWorkspace();
+  const { mutate, isPending } = useDeleteProject();
+  const { mutate: deleteProject, isPending: isDeletingProject } =
+    useDeleteProject();
 
   const [DeleteDialog, confirmDelete] = useConfirm(
-    "Delete Workspace",
+    "Delete Project",
     "This action is irreversible",
     "destructive"
   );
@@ -59,14 +59,14 @@ export const EditProjectForm = ({
   const handleDelete = async () => {
     const ok = await confirmDelete();
     if (!ok) return;
-    /*deleteWorkspace(
-     { param: { workspaceId: initialValues.$id } },
-     {
-       onSuccess: () => {
-         router.push("/");
-       }
-     }
-   );*/
+    deleteProject(
+      { param: { projectId: initialValues.$id } },
+      {
+        onSuccess: () => {
+          window.location.href = `/workspaces/${initialValues.workspaceId}`;
+        }
+      }
+    );
   };
 
   const onSubmit = (values: z.infer<typeof updateProjectSchema>) => {
@@ -77,10 +77,6 @@ export const EditProjectForm = ({
 
     mutate(
       {
-        form: {
-          name: finalValues.name as string, // ensure type matches ParsedFormValue
-          image: finalValues.image
-        },
         param: { projectId: initialValues.$id }
       },
       {

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TaskStatus } from "./types";
+import { TaskStatus } from "../types";
 
 export const createTaskSchema = z.object({
   name: z.string().trim().min(1, "Required"),
@@ -8,5 +8,5 @@ export const createTaskSchema = z.object({
   projectId: z.string().trim().min(1, "Required"),
   dueDate: z.coerce.date(),
   assigneeId: z.string().trim().min(1, "Required"),
-  description: z.string().optional(),
+  description: z.string().optional()
 });
